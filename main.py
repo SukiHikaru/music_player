@@ -16,10 +16,23 @@ statusbar.pack(side=BOTTOM, fill=X)
 menubar = Menu(root)  # create Menubar
 root.config(menu=menubar)  # make sure it is on top and ready to receive submenues
 
+playlist = []
 
+# playlist containts the full path + filename
+# playlistbox contains just the filename
+# fullpath + filename is required to play the music inside play_music load function
 def browse_file():
-    global filename
-    filename = filedialog.askopenfilename()
+    global filename_path
+    filename_path = filedialog.askopenfilename()
+    add_to_playlist(filename_path)
+
+def add_to_playlist(filename):
+    filename = os.path.basename(filename)
+    print(filename)
+    index = 0
+    index += 1
+    playlistBox.insert(index, filename)
+    playlist.insert(index,filename_path)
 
 
 def about_us():
@@ -38,22 +51,24 @@ subMenu.add_command(label='About us', command=about_us)
 
 mixer.init()  # initializing
 
+
 root.title('Melody')
 root.iconbitmap(r'images/melody.ico')
 
-leftframe = Frame(root)
-leftframe.pack(side=LEFT, padx=30)
+# root Window - Statusbar, LeftFrame, RightFrame
+# leftFrame - The listbox,
+# rightFrame - Topframe, MiddleFrame and bottomFrame
+leftFrame = Frame(root)
+leftFrame.pack(side=LEFT, padx=30)
 
-Lbl = Listbox(leftframe)
-Lbl.insert(0, 'song1')
-Lbl.insert(1, 'song2')
-Lbl.pack()
+playlistBox = Listbox(leftFrame)
+playlistBox.pack()
 
-btn1 = TK.Button(leftframe, text=' + Add')
-btn1.pack(side=LEFT)
+addBtn = TK.Button(leftFrame, text=' + Add', command=browse_file)
+addBtn.pack(side=LEFT)
 
-btn2 = TK.Button(leftframe, text=' - Del')
-btn2.pack(side=LEFT)
+delBtn = TK.Button(leftFrame, text=' - Del')
+delBtn.pack(side=LEFT)
 
 rightframe = Frame(root)
 rightframe.pack()
@@ -75,14 +90,14 @@ currenttimelabel.pack()  # pady = create distance
 
 
 def show_details():
-    file_data = os.path.splitext(filename)
+    file_data = os.path.splitext(filename_path)
 
     if file_data[1] == '.mp3':  # file_data=list, second element is .mp3
-        audio = MP3(filename)
+        audio = MP3(filename_path)
         total_length = audio.info.length  # length of the music file  - metadata
 
     else:
-        a = mixer.Sound(filename)
+        a = mixer.Sound(filename_path)
         total_length = a.get_length()  # length of another file
 
     mins, secs = divmod(total_length, 60)  # div - total_length/60, mod - total_length % 60
@@ -123,9 +138,12 @@ def playMusic():
         paused = FALSE
     else:
         try:
-            mixer.music.load(filename)
+            selected_song = playlistBox.curselection()
+            selected_song = int(selected_song[0])
+            play_it = playlist[selected_song]
+            mixer.music.load(play_it)
             mixer.music.play()
-            statusbar['text'] = 'Playing music' + ' ' + os.path.basename(filename)
+            statusbar['text'] = 'Playing music' + ' ' + os.path.basename(filename_path)
             show_details()
         except:
             TK.messagebox.showerror('File not found', 'Music could not be played. Please check if the file exists!')
