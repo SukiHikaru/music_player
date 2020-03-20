@@ -89,15 +89,15 @@ currenttimelabel = TK.Label(topframe, text='Current Time : --:-- ', relief=GROOV
 currenttimelabel.pack()  # pady = create distance
 
 
-def show_details():
-    file_data = os.path.splitext(filename_path)
+def show_details(play_song):
+    file_data = os.path.splitext(play_song)
 
     if file_data[1] == '.mp3':  # file_data=list, second element is .mp3
-        audio = MP3(filename_path)
+        audio = MP3(play_song)
         total_length = audio.info.length  # length of the music file  - metadata
 
     else:
-        a = mixer.Sound(filename_path)
+        a = mixer.Sound(play_song)
         total_length = a.get_length()  # length of another file
 
     mins, secs = divmod(total_length, 60)  # div - total_length/60, mod - total_length % 60
@@ -138,13 +138,15 @@ def playMusic():
         paused = FALSE
     else:
         try:
+            stopMusic()
+            time.sleep(1)
             selected_song = playlistBox.curselection()
             selected_song = int(selected_song[0])
             play_it = playlist[selected_song]
             mixer.music.load(play_it)
             mixer.music.play()
-            statusbar['text'] = 'Playing music' + ' ' + os.path.basename(filename_path)
-            show_details()
+            statusbar['text'] = 'Playing music' + ' ' + os.path.basename(play_it)
+            show_details(play_it)
         except:
             TK.messagebox.showerror('File not found', 'Music could not be played. Please check if the file exists!')
 
