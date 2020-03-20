@@ -9,7 +9,10 @@ from mutagen.mp3 import MP3
 from pygame import mixer  # mixer is responsible for playing music
 
 root = Tk()
-# create a menubar
+
+statusbar = TK.Label(root, text='Welcome to Melody', relief=SUNKEN, anchor=W)  # anchor = move text to the area I want
+statusbar.pack(side=BOTTOM, fill=X)
+
 menubar = Menu(root)  # create Menubar
 root.config(menu=menubar)  # make sure it is on top and ready to receive submenues
 
@@ -38,18 +41,40 @@ mixer.init()  # initializing
 root.title('Melody')
 root.iconbitmap(r'images/melody.ico')
 
-filelabel = TK.Label(root, text='Lets make some noise!')
-filelabel.pack()  # pady = create distance
+leftframe = Frame(root)
+leftframe.pack(side=LEFT, padx=30)
 
-lengthlabel = TK.Label(root, text='Total length - --:--')
+Lbl = Listbox(leftframe)
+Lbl.insert(0, 'song1')
+Lbl.insert(1, 'song2')
+Lbl.pack()
+
+btn1 = TK.Button(leftframe, text=' + Add')
+btn1.pack(side=LEFT)
+
+btn2 = TK.Button(leftframe, text=' - Del')
+btn2.pack(side=LEFT)
+
+rightframe = Frame(root)
+rightframe.pack()
+
+topframe = Frame(rightframe)
+topframe.pack()
+
+middleframe = Frame(rightframe)
+middleframe.pack(pady=30, padx=10)
+
+bottomframe = Frame(rightframe)
+bottomframe.pack()
+
+lengthlabel = TK.Label(topframe, text='Total length - --:--')
 lengthlabel.pack(pady=10)  # pady = create distance
 
-currenttimelabel = TK.Label(root, text='Current Time : --:-- ', relief=GROOVE)  # making countdown
+currenttimelabel = TK.Label(topframe, text='Current Time : --:-- ', relief=GROOVE)  # making countdown
 currenttimelabel.pack()  # pady = create distance
 
 
 def show_details():
-    filelabel['text'] = 'Playing' + ' ' + os.path.basename(filename)
     file_data = os.path.splitext(filename)
 
     if file_data[1] == '.mp3':  # file_data=list, second element is .mp3
@@ -68,7 +93,7 @@ def show_details():
 
     # threading makes sure that programm could execute different functions at the same time
     t1 = threading.Thread(target=start_count, args=(
-    total_length,))  # ruf funktion zwar sofort auf, fehlt aber ein Argument zum bearbeiten - > wenn ich start_count() schreibe dann funktioniert es nicht
+        total_length,))  # ruf funktion zwar sofort auf, fehlt aber ein Argument zum bearbeiten - > wenn ich start_count() schreibe dann funktioniert es nicht
     t1.start()
 
 
@@ -115,12 +140,6 @@ def set_vol(val):
     volume = int(val) / 100
     mixer.music.set_volume(volume)  # set volume of mixer takes value only from 0 to 1
 
-
-middleframe = Frame(root)
-middleframe.pack(pady=30, padx=10)
-
-bottomframe = Frame(root)
-bottomframe.pack()
 
 paused = FALSE
 
@@ -180,11 +199,8 @@ scale.set(50)  # set scale shows to 50
 mixer.music.set_volume(0.5)  # set volume automatically to 50
 scale.grid(row=0, column=3, pady=10, padx=30)
 
-statusbar = TK.Label(root, text='Welcome to Melody', relief=SUNKEN, anchor=W)  # anchor = move text to the area I want
-statusbar.pack(side=BOTTOM, fill=X)
 
-
-#event and binding  - how should the x button behave if i press on it during playing the music
+# event and binding  - how should the x button behave if i press on it during playing the music
 def on_closing():
     stopMusic()
     root.destroy()
