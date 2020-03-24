@@ -38,6 +38,11 @@ def add_to_playlist(filename):
 def about_us():
     TK.messagebox.showinfo('Info about us', 'This is my first music player')
 
+def del_song():
+    selected_song = playlistBox.curselection()    # curselection gives me a tuple
+    selected_song = int(selected_song[0])         # get the first element of the tuple
+    playlistBox.delete(selected_song)             # remove items from playlistBox
+    playlist.pop(selected_song)                   # remove the item from playlist by using the index = selected song
 
 # create submenus
 subMenu = Menu(menubar, tearoff=0)
@@ -67,7 +72,7 @@ playlistBox.pack()
 addBtn = TK.Button(leftFrame, text=' + Add', command=browse_file)
 addBtn.pack(side=LEFT)
 
-delBtn = TK.Button(leftFrame, text=' - Del')
+delBtn = TK.Button(leftFrame, text=' - Del', command=del_song)
 delBtn.pack(side=LEFT)
 
 rightframe = Frame(root)
