@@ -5,12 +5,19 @@ import tkinter.messagebox
 import os
 import time
 import threading
+from ttkthemes import themed_tk as tk
 from mutagen.mp3 import MP3
+from tkinter import ttk
 from pygame import mixer  # mixer is responsible for playing music
 
-root = Tk()
+root = tk.ThemedTk()
+root.get_themes()
+root.set_theme('radiance')
 
-statusbar = TK.Label(root, text='Welcome to Melody', relief=SUNKEN, anchor=W)  # anchor = move text to the area I want
+# Fonts - Arial (Correspsonds to Helvetica), Courier New, Comic Sans MS Fixedsys, MS Sans Serif, MS Serif, Symbol, System, Times New Roman (Times), Verada
+# Styles - normal, bold, roman, italic, underline, overstrike
+
+statusbar = TK.ttk.Label(root, text='Welcome to Melody', relief=SUNKEN, anchor=W, font='Times 15 roman')  # anchor = move text to the area I want
 statusbar.pack(side=BOTTOM, fill=X)
 
 menubar = Menu(root)  # create Menubar
@@ -56,7 +63,6 @@ subMenu.add_command(label='About us', command=about_us)
 
 mixer.init()  # initializing
 
-
 root.title('Melody')
 root.iconbitmap(r'images/melody.ico')
 
@@ -64,19 +70,19 @@ root.iconbitmap(r'images/melody.ico')
 # leftFrame - The listbox,
 # rightFrame - Topframe, MiddleFrame and bottomFrame
 leftFrame = Frame(root)
-leftFrame.pack(side=LEFT, padx=30)
+leftFrame.pack(side=LEFT, padx=30, pady=30)
 
 playlistBox = Listbox(leftFrame)
 playlistBox.pack()
 
-addBtn = TK.Button(leftFrame, text=' + Add', command=browse_file)
+addBtn = TK.ttk.Button(leftFrame, text=' + Add', command=browse_file)
 addBtn.pack(side=LEFT)
 
-delBtn = TK.Button(leftFrame, text=' - Del', command=del_song)
+delBtn = TK.ttk.Button(leftFrame, text=' - Del', command=del_song)
 delBtn.pack(side=LEFT)
 
 rightframe = Frame(root)
-rightframe.pack()
+rightframe.pack(pady=30)
 
 topframe = Frame(rightframe)
 topframe.pack()
@@ -87,10 +93,10 @@ middleframe.pack(pady=30, padx=10)
 bottomframe = Frame(rightframe)
 bottomframe.pack()
 
-lengthlabel = TK.Label(topframe, text='Total length - --:--')
+lengthlabel = TK.ttk.Label(topframe, text='Total length - --:--')
 lengthlabel.pack(pady=10)  # pady = create distance
 
-currenttimelabel = TK.Label(topframe, text='Current Time : --:-- ', relief=GROOVE)  # making countdown
+currenttimelabel = TK.ttk.Label(topframe, text='Current Time : --:-- ', relief=GROOVE)  # making countdown
 currenttimelabel.pack()  # pady = create distance
 
 
@@ -162,7 +168,7 @@ def stopMusic():
 
 
 def set_vol(val):
-    volume = int(val) / 100
+    volume = float(val) / 100
     mixer.music.set_volume(volume)  # set volume of mixer takes value only from 0 to 1
 
 
@@ -199,27 +205,27 @@ def muteMusic():
 
 
 playPhoto = TK.PhotoImage(file='images/music-player.png')
-playBtn = TK.Button(middleframe, image=playPhoto, command=playMusic)
+playBtn = TK.ttk.Button(middleframe, image=playPhoto, command=playMusic)
 playBtn.grid(row=0, column=0, padx=10)
 
 stopPhoto = TK.PhotoImage(file='images/stop.png')
-stopBtn = TK.Button(middleframe, image=stopPhoto, command=stopMusic)
+stopBtn = TK.ttk.Button(middleframe, image=stopPhoto, command=stopMusic)
 stopBtn.grid(row=0, column=1, padx=10)
 
 pausePhoto = TK.PhotoImage(file='images/pause.png')
-pauseBtn = TK.Button(middleframe, image=pausePhoto, command=pauseMusic)
+pauseBtn = TK.ttk.Button(middleframe, image=pausePhoto, command=pauseMusic)
 pauseBtn.grid(row=0, column=2, padx=10)
 
 rewindPhoto = TK.PhotoImage(file='images/play.png')  # rewind= zurückspulen
-rewindBtn = TK.Button(bottomframe, image=rewindPhoto, command=rewindMusic)
+rewindBtn = TK.ttk.Button(bottomframe, image=rewindPhoto, command=rewindMusic)
 rewindBtn.grid(row=0, column=1, padx=10)
 
 mutePhoto = TK.PhotoImage(file='images/mute.png')  # rewind= zurückspulen
 volumePhoto = TK.PhotoImage(file='images/volume.png')
-volumeBtn = TK.Button(bottomframe, image=volumePhoto, command=muteMusic)
+volumeBtn = TK.ttk.Button(bottomframe, image=volumePhoto, command=muteMusic)
 volumeBtn.grid(row=0, column=2)
 
-scale = TK.Scale(bottomframe, from_=0, to=100, orient=HORIZONTAL, command=set_vol)
+scale = TK.ttk.Scale(bottomframe, from_=0, to=100, orient=HORIZONTAL, command=set_vol)
 scale.set(50)  # set scale shows to 50
 mixer.music.set_volume(0.5)  # set volume automatically to 50
 scale.grid(row=0, column=3, pady=10, padx=30)
